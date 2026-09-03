@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currículo Certo — monte um currículo limpo e compatível com ATS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #E4E6EA;
+    --panel: #FFFFFF;
+    --border: #D3D6DC;
+    --ink: #23262B;
+    --ink-soft: #6B6F78;
+    --accent: #8B5E3C;
+    --accent-soft: #F0E6DC;
+    --resume-accent: #2F5D50;
+    --danger: #A24A38;
+    --focus: #2F5D50;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+  a{color:inherit;}
+  button, input, textarea{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    padding: 18px 28px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar h1{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size: 1.3rem;
+    margin:0;
+  }
+  .topbar p{
+    margin: 2px 0 0;
+    font-size: .82rem;
+    color: var(--ink-soft);
+  }
+  .topbar-actions{ display:flex; gap:10px; }
+
+  .btn{
+    border:none;
+    background: var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size: .85rem;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor:pointer;
+  }
+  .btn:hover{ filter:brightness(.94); }
+  .btn-ghost{
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    font-weight:500;
+  }
+  .btn-ghost:hover{ border-color: var(--ink-soft); color: var(--ink); }
+  .btn-small{
+    padding: 6px 10px;
+    font-size: .78rem;
+    border-radius:5px;
+  }
+
+  .app{
+    display:grid;
+    grid-template-columns: minmax(340px, 460px) 1fr;
+    gap: 0;
+    align-items:start;
+  }
+
+  .editor{
+    padding: 26px 28px 80px;
+    max-width: 620px;
+  }
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 18px 20px;
+    margin-bottom: 16px;
+  }
+  .card h2{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size: 1.02rem;
+    margin: 0 0 14px;
+  }
+  .field{ margin-bottom: 12px; }
+  .field label{
+    display:block;
+    font-size: .76rem;
+    color: var(--ink-soft);
+    margin-bottom: 5px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    border: 1px solid var(--border);
+    background: #FBFBFA;
+    padding: 9px 11px;
+    border-radius: 6px;
+    font-size: .9rem;
+    color: var(--ink);
+  }
+  .field textarea{ resize: vertical; min-height: 64px; line-height:1.5; }
+  .field-grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .entry{
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px 14px 6px;
+    margin-bottom: 12px;
+    position:relative;
+  }
+  .entry-remove{
+    position:absolute;
+    top: 8px; right: 8px;
+    background:none; border:none;
+    color: var(--ink-soft);
+    font-size: .78rem;
+    cursor:pointer;
+    padding: 3px 6px;
+  }
+  .entry-remove:hover{ color: var(--danger); }
+
+  .tag-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+  .tag{
+    display:flex; align-items:center; gap:6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 5px 6px 5px 12px;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight:500;
+  }
+  .tag button{
+    background:none; border:none; color: inherit; cursor:pointer;
+    font-size:.8rem; line-height:1; padding: 3px 5px;
+  }
+  .tag-add{ display:flex; gap:8px; }
+  .tag-add input{ flex:1; }
+
+  .preview-wrap{
+    padding: 26px 28px 80px;
+    display:flex;
+    justify-content:center;
+  }
+  .page{
+    background:#fff;
+    width: 100%;
+    max-width: 680px;
+    min-height: 900px;
+    padding: 52px 54px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 24px 48px -28px rgba(35,38,43,.4);
+    position: sticky;
+    top: 26px;
+  }
+  .r-name{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size: 1.7rem;
+    margin: 0;
+  }
+  .r-title{
+    font-size: .95rem;
+    color: var(--resume-accent);
+    font-weight:500;
+    margin: 3px 0 10px;
+  }
+  .r-contact{
+    font-size: .8rem;
+    color: var(--ink-soft);
+    display:flex;
+    flex-wrap:wrap;
+    gap: 4px 12px;
+    margin-bottom: 20px;
+  }
+  .r-section{ margin-bottom: 20px; }
+  .r-section:last-child{ margin-bottom:0; }
+  .r-section h3{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size: .92rem;
+    color: var(--resume-accent);
+    margin: 0 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1.5px solid var(--resume-accent);
+    letter-spacing: .01em;
+  }
+  .r-summary{ font-size: .88rem; line-height:1.6; color: #333; }
+  .r-item{ margin-bottom: 12px; }
+  .r-item:last-child{ margin-bottom:0; }
+  .r-item-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap: 10px;
+    font-size: .88rem;
+  }
+  .r-item-role{ font-weight:600; }
+  .r-item-org{ color: #444; }
+  .r-item-period{ color: var(--ink-soft); font-size: .78rem; white-space:nowrap; }
+  .r-item-desc{ font-size: .84rem; line-height:1.55; color:#333; margin-top:3px; white-space:pre-line; }
+  .r-skills{ display:flex; flex-wrap:wrap; gap: 6px 10px; }
+  .r-skill{
+    font-size: .8rem;
+    color: #333;
+    background: #F1F1EE;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .r-empty{ color: #AFAFAA; font-style: italic; font-size: .85rem; }
+
+  .status{ font-size: .78rem; color: var(--ink-soft); padding: 0 28px 18px; }
+
+  @media (max-width: 900px){
+    .app{ grid-template-columns: 1fr; }
+    .page{ position: static; }
+    .preview-wrap{ padding-top: 0; }
+  }
+
+  @media print{
+    body{ background:#fff; }
+    .topbar, .editor, .status{ display:none !important; }
+    .app{ display:block; }
+    .preview-wrap{ padding:0; }
+    .page{ box-shadow:none; max-width:none; width:100%; min-height:0; padding:0; position:static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>Currículo Certo</h1>
+    <p>Preencha à esquerda, veja o currículo pronto à direita.</p>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" id="clearBtn">Limpar tudo</button>
+    <button class="btn" id="printBtn">Exportar em PDF</button>
+  </div>
+</div>
+<div class="status" id="status"></div>
+
+<div class="app">
+  <div class="editor">
+
+    <div class="card">
+      <h2>Dados pessoais</h2>
+      <div class="field">
+        <label for="fName">Nome completo</label>
+        <input type="text" id="fName" placeholder="Maria Oliveira">
+      </div>
+      <div class="field">
+        <label for="fRole">Cargo desejado</label>
+        <input type="text" id="fRole" placeholder="Analista de Marketing">
+      </div>
+      <div class="field-grid2">
+        <div class="field">
+          <label for="fEmail">E-mail</label>
+          <input type="text" id="fEmail" placeholder="maria@email.com">
+        </div>
+        <div class="field">
+          <label for="fPhone">Telefone</label>
+          <input type="text" id="fPhone" placeholder="(11) 99999-0000">
+        </div>
+      </div>
+      <div class="field-grid2">
+        <div class="field">
+          <label for="fCity">Cidade</label>
+          <input type="text" id="fCity" placeholder="São Paulo, SP">
+        </div>
+        <div class="field">
+          <label for="fLink">LinkedIn ou site</label>
+          <input type="text" id="fLink" placeholder="linkedin.com/in/maria">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Resumo profissional</h2>
+      <div class="field">
+        <textarea id="fSummary" placeholder="2 a 3 frases sobre sua experiência, principais competências e o que você busca."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Experiência profissional</h2>
+      <div id="expList"></div>
+      <button class="btn btn-ghost btn-small" id="addExpBtn">+ adicionar experiência</button>
+    </div>
+
+    <div class="card">
+      <h2>Formação</h2>
+      <div id="eduList"></div>
+      <button class="btn btn-ghost btn-small" id="addEduBtn">+ adicionar formação</button>
+    </div>
+
+    <div class="card">
+      <h2>Habilidades</h2>
+      <div class="tag-row" id="skillTags"></div>
+      <div class="tag-add">
+        <input type="text" id="skillInput" placeholder="Ex: Excel avançado">
+        <button class="btn btn-small" id="addSkillBtn">Adicionar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="preview-wrap">
+    <div class="page" id="page">
+      <h2 class="r-name" id="rName">Seu nome</h2>
+      <p class="r-title" id="rRole">Cargo desejado</p>
+      <div class="r-contact" id="rContact"></div>
+
+      <div class="r-section" id="rSummarySection">
+        <h3>Resumo</h3>
+        <p class="r-summary" id="rSummary"></p>
+      </div>
+
+      <div class="r-section" id="rExpSection">
+        <h3>Experiência profissional</h3>
+        <div id="rExpList"></div>
+      </div>
+
+      <div class="r-section" id="rEduSection">
+        <h3>Formação</h3>
+        <div id="rEduList"></div>
+      </div>
+
+      <div class="r-section" id="rSkillSection">
+        <h3>Habilidades</h3>
+        <div class="r-skills" id="rSkillList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'curriculocerto:state';
+  let state = {
+    name:'', role:'', email:'', phone:'', city:'', link:'', summary:'',
+    experiences: [], education: [], skills: []
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $('status');
+  let saveTimer = null;
+
+  function scheduleSave(){
+    statusEl.textContent = 'Salvando…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try{
+        await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+        statusEl.textContent = 'Rascunho salvo neste dispositivo.';
+      }catch(e){
+        statusEl.textContent = 'Não deu para salvar agora, mas o currículo segue editável nesta sessão.';
+      }
+    }, 400);
+  }
+
+  async function load(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        state = Object.assign(state, parsed);
+      }
+    }catch(e){ /* sem rascunho salvo ainda */ }
+    hydrateForm();
+    renderDynamic();
+    renderPreview();
+  }
+
+  function hydrateForm(){
+    $('fName').value = state.name;
+    $('fRole').value = state.role;
+    $('fEmail').value = state.email;
+    $('fPhone').value = state.phone;
+    $('fCity').value = state.city;
+    $('fLink').value = state.link;
+    $('fSummary').value = state.summary;
+  }
+
+  // --- campos simples ---
+  ['fName','fRole','fEmail','fPhone','fCity','fLink','fSummary'].forEach(id => {
+    const map = { fName:'name', fRole:'role', fEmail:'email', fPhone:'phone', fCity:'city', fLink:'link', fSummary:'summary' };
+    $(id).addEventListener('input', (e) => {
+      state[map[id]] = e.target.value;
+      renderPreview();
+      scheduleSave();
+    });
+  });
+
+  // --- experiências ---
+  function addExperience(data){
+    state.experiences.push(Object.assign({
+      id: 'e' + Date.now() + Math.random().toString(36).slice(2,6),
+      role:'', org:'', period:'', desc:''
+    }, data || {}));
+  }
+  function renderExpEditor(){
+    const wrap = $('expList');
+    wrap.innerHTML = '';
+    state.experiences.forEach(exp => {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `
+        <button class="entry-remove" type="button">remover</button>
+        <div class="field"><label>Cargo</label><input type="text" data-field="role" placeholder="Analista de Marketing Pleno"></div>
+        <div class="field"><label>Empresa</label><input type="text" data-field="org" placeholder="Empresa Ltda."></div>
+        <div class="field"><label>Período</label><input type="text" data-field="period" placeholder="Jan 2022 — atual"></div>
+        <div class="field"><label>Principais entregas</label><textarea data-field="desc" placeholder="Uma linha por conquista, com números quando possível."></textarea></div>
+      `;
+      div.querySelector('[data-field=role]').value = exp.role;
+      div.querySelector('[data-field=org]').value = exp.org;
+      div.querySelector('[data-field=period]').value = exp.period;
+      div.querySelector('[data-field=desc]').value = exp.desc;
+      div.querySelectorAll('[data-field]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          exp[e.target.dataset.field] = e.target.value;
+          renderPreview();
+          scheduleSave();
+        });
+      });
+      div.querySelector('.entry-remove').addEventListener('click', () => {
+        state.experiences = state.experiences.filter(x => x.id !== exp.id);
+        renderExpEditor(); renderPreview(); scheduleSave();
+      });
+      wrap.appendChild(div);
+    });
+  }
+  $('addExpBtn').addEventListener('click', () => {
+    addExperience();
+    renderExpEditor(); renderPreview(); scheduleSave();
+  });
+
+  // --- formação ---
+  function addEducation(data){
+    state.education.push(Object.assign({
+      id: 'd' + Date.now() + Math.random().toString(36).slice(2,6),
+      course:'', school:'', period:''
+    }, data || {}));
+  }
+  function renderEduEditor(){
+    const wrap = $('eduList');
+    wrap.innerHTML = '';
+    state.education.forEach(edu => {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `
+        <button class="entry-remove" type="button">remover</button>
+        <div class="field"><label>Curso</label><input type="text" data-field="course" placeholder="Bacharelado em Administração"></div>
+        <div class="field"><label>Instituição</label><input type="text" data-field="school" placeholder="Universidade Federal"></div>
+        <div class="field"><label>Período</label><input type="text" data-field="period" placeholder="2018 — 2022"></div>
+      `;
+      div.querySelector('[data-field=course]').value = edu.course;
+      div.querySelector('[data-field=school]').value = edu.school;
+      div.querySelector('[data-field=period]').value = edu.period;
+      div.querySelectorAll('[data-field]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          edu[e.target.dataset.field] = e.target.value;
+          renderPreview();
+          scheduleSave();
+        });
+      });
+      div.querySelector('.entry-remove').addEventListener('click', () => {
+        state.education = state.education.filter(x => x.id !== edu.id);
+        renderEduEditor(); renderPreview(); scheduleSave();
+      });
+      wrap.appendChild(div);
+    });
+  }
+  $('addEduBtn').addEventListener('click', () => {
+    addEducation();
+    renderEduEditor(); renderPreview(); scheduleSave();
+  });
+
+  // --- habilidades ---
+  function renderSkillEditor(){
+    const wrap = $('skillTags');
+    wrap.innerHTML = '';
+    state.skills.forEach(skill => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.innerHTML = `<span></span>`;
+      tag.querySelector('span').textContent = skill;
+      const rm = document.createElement('button');
+      rm.textContent = '✕';
+      rm.setAttribute('aria-label', 'Remover ' + skill);
+      rm.addEventListener('click', () => {
+        state.skills = state.skills.filter(s => s !== skill);
+        renderSkillEditor(); renderPreview(); scheduleSave();
+      });
+      tag.appendChild(rm);
+      wrap.appendChild(tag);
+    });
+  }
+  function addSkillFromInput(){
+    const input = $('skillInput');
+    const val = input.value.trim();
+    if(!val) return;
+    if(!state.skills.includes(val)) state.skills.push(val);
+    input.value = '';
+    renderSkillEditor(); renderPreview(); scheduleSave();
+  }
+  $('addSkillBtn').addEventListener('click', addSkillFromInput);
+  $('skillInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); addSkillFromInput(); }
+  });
+
+  function renderDynamic(){
+    renderExpEditor();
+    renderEduEditor();
+    renderSkillEditor();
+  }
+
+  // --- preview ---
+  function renderPreview(){
+    $('rName').textContent = state.name || 'Seu nome';
+    $('rRole').textContent = state.role || 'Cargo desejado';
+
+    const contactParts = [state.email, state.phone, state.city, state.link].filter(Boolean);
+    $('rContact').textContent = contactParts.join('  ·  ');
+
+    const summaryEl = $('rSummary');
+    const summarySection = $('rSummarySection');
+    if(state.summary.trim()){
+      summaryEl.textContent = state.summary;
+      summarySection.style.display = '';
+    } else {
+      summarySection.style.display = 'none';
+    }
+
+    const expWrap = $('rExpList');
+    const expSection = $('rExpSection');
+    expWrap.innerHTML = '';
+    const validExp = state.experiences.filter(e => e.role || e.org || e.desc);
+    if(validExp.length === 0){
+      expSection.style.display = 'none';
+    } else {
+      expSection.style.display = '';
+      validExp.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'r-item';
+        div.innerHTML = `
+          <div class="r-item-head">
+            <span><span class="r-item-role"></span> <span class="r-item-org"></span></span>
+            <span class="r-item-period"></span>
+          </div>
+          <div class="r-item-desc"></div>
+        `;
+        div.querySelector('.r-item-role').textContent = e.role || '';
+        div.querySelector('.r-item-org').textContent = e.org ? ('— ' + e.org) : '';
+        div.querySelector('.r-item-period').textContent = e.period || '';
+        div.querySelector('.r-item-desc').textContent = e.desc || '';
+        expWrap.appendChild(div);
+      });
+    }
+
+    const eduWrap = $('rEduList');
+    const eduSection = $('rEduSection');
+    eduWrap.innerHTML = '';
+    const validEdu = state.education.filter(e => e.course || e.school);
+    if(validEdu.length === 0){
+      eduSection.style.display = 'none';
+    } else {
+      eduSection.style.display = '';
+      validEdu.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'r-item';
+        div.innerHTML = `
+          <div class="r-item-head">
+            <span><span class="r-item-role"></span> <span class="r-item-org"></span></span>
+            <span class="r-item-period"></span>
+          </div>
+        `;
+        div.querySelector('.r-item-role').textContent = e.course || '';
+        div.querySelector('.r-item-org').textContent = e.school ? ('— ' + e.school) : '';
+        div.querySelector('.r-item-period').textContent = e.period || '';
+        eduWrap.appendChild(div);
+      });
+    }
+
+    const skillWrap = $('rSkillList');
+    const skillSection = $('rSkillSection');
+    skillWrap.innerHTML = '';
+    if(state.skills.length === 0){
+      skillSection.style.display = 'none';
+    } else {
+      skillSection.style.display = '';
+      state.skills.forEach(s => {
+        const span = document.createElement('span');
+        span.className = 'r-skill';
+        span.textContent = s;
+        skillWrap.appendChild(span);
+      });
+    }
+  }
+
+  $('printBtn').addEventListener('click', () => window.print());
+
+  $('clearBtn').addEventListener('click', () => {
+    if(!confirm('Isso apaga todo o conteúdo do currículo salvo neste dispositivo. Continuar?')) return;
+    state = { name:'', role:'', email:'', phone:'', city:'', link:'', summary:'', experiences:[], education:[], skills:[] };
+    hydrateForm();
+    renderDynamic();
+    renderPreview();
+    scheduleSave();
+  });
+
+  load();
+})();
+</script>
+
+</body>
+</html>
